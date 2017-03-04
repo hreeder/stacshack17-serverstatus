@@ -53,13 +53,11 @@ class HunterAgent(threading.Thread):
                     self.logger.debug("Dispatching Command: {}".format(command))
                     self.commands[command](command, args)
 
-
     def shutdown(self):
         self.logger.debug("Shutting Down")
         self.pubsub.unsubscribe()
         self.redis.publish('hunter', 'AGENT_END {h.agent_name}'.format(h=self))
         self.redis.srem("HUNTER_CLIENTS", self.agent_name)
-
 
     def _reply(self, question, answer):
         self.redis.publish('hunter', "RESPONSE {} {h.agent_name} {}".format(question, answer, h=self))
