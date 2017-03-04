@@ -1,5 +1,6 @@
 from flask import Flask, jsonify
-from flask_ask import Ask, statement
+from flask_ask import Ask, statement, question
+import random
 import redis
 
 from config import REDIS_URL
@@ -9,6 +10,12 @@ ask = Ask(app, "/alexa")
 r = redis.StrictRedis.from_url(REDIS_URL)
 ps = r.pubsub()
 ps.subscribe(["hunter"])
+
+
+@ask.launch
+def startStatus():
+    welcome = "Welcome to server status"
+    return question(welcome)
 
 
 @ask.intent('ServerStatusIntent')
@@ -31,7 +38,6 @@ def getServerStatus():
                 break
 
     vals = [float(x[3]) for x in responses]
-    print(vals)
 
     loads = {
         "low": len([x for x in responses if float(x[3]) < 25.0]),
@@ -40,20 +46,46 @@ def getServerStatus():
         "fire": len([x for x in responses if float(x[3]) >= 90.0])
     }
 
-    toappend = ""
+    parts = []
 
-    if loads['fire'] > 0:
-        toappend = ", you might want to fix that."
+    def quald(val):
+        if val == 1:
+            qualifier = "is"
+        else:
+            qualifier = "are"
 
-    return statement("Of your {} servers, {} are not being used much, {} are "
-                     "in a medium state, {} are being highly used, and {} are"
-                     " on fire{}".format(
-                        len(clients),
-                        loads['low'],
-                        loads['mid'],
-                        loads['high'],
-                        loads['fire'],
-                        toappend))
+        return "{} {}".format(val, qualifier)
+
+    if loads['low']:
+        parts.append(
+            "{} practically idle".format(quald(loads['low']))
+        )
+
+    if loads['mid']:
+        parts.append(
+            "{} being somewhat utilized".format(quald(loads['mid']))
+        )
+
+    if loads['high']:
+        parts.append(
+            "{} under high load".format(quald(loads['high']))
+        )
+
+    if loads['fire']:
+        parts.append(
+            "{} on fire. {}".format(quald(loads['fire'], random.choice([
+                "You might want to fix that...",
+                "You could say that something is hitting the fan..."
+            ])))
+        )
+
+    output = "Of your {} servers, ".format(len(clients))
+    if len(parts) > 1:
+        output += ", ".join(parts[:-1]) + ", and " + parts[-1]
+    else:
+        output += parts[0]
+
+    return statement(output)
 
 
 @app.route("/")
