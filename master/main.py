@@ -24,6 +24,9 @@ def getServerStatus():
     clients = r.smembers("HUNTER_CLIENTS")
     responses = []
 
+    if len(clients) == 0:
+        return statement("I don't know about any servers to check. Maybe set some up?")
+
     for item in ps.listen():
         if item['type'] == "message":
             data = item['data'].decode('utf-8')
