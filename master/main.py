@@ -1,7 +1,8 @@
-from config import REDIS_URL
 from flask import Flask, jsonify
 from flask_ask import Ask, statement
 import redis
+
+from config import REDIS_URL
 
 app = Flask(__name__)
 ask = Ask(app, "/alexa")
@@ -85,6 +86,3 @@ def index():
     }
 
     return jsonify(loads=loads, count=len(clients))
-
-if __name__ == "__main__":
-    app.run("0.0.0.0", 5000, True)
