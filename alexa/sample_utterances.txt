@@ -1,0 +1,3 @@
+GetStatusIntent are my servers ok
+GetStatusIntent are my servers up
+GetStatusIntent are my servers down
