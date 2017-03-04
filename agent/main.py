@@ -51,7 +51,8 @@ class HunterAgent(threading.Thread):
 
                 if command in self.commands:
                     self.logger.debug("Dispatching Command: {}".format(command))
-                    self.commands[command](args)
+                    self.commands[command](command, args)
+
 
     def shutdown(self):
         self.logger.debug("Shutting Down")
@@ -59,11 +60,13 @@ class HunterAgent(threading.Thread):
         self.redis.publish('hunter', 'AGENT_END {h.agent_name}'.format(h=self))
         self.redis.srem("HUNTER_CLIENTS", self.agent_name)
 
+
     def _reply(self, question, answer):
         self.redis.publish('hunter', "RESPONSE {} {h.agent_name} {}".format(question, answer, h=self))
 
-    def cpu_percent(self, args):
-        self._reply("Q_CPUPERCENT", psutil.cpu_percent(interval=0.5))
+
+    def cpu_percent(self, cmd, args):
+        self._reply(cmd, psutil.cpu_percent(interval=0.5))
 
 
 if __name__ == "__main__":

@@ -1,6 +1,8 @@
 VENV/
 .vscode/
 config.py
+*.rdb
+*.aof
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
