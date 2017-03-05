@@ -11,8 +11,16 @@ DockerChaosIntent kill something
 DockerChaosIntent break something
 DockerChaosIntent surprise me
 DockerChaosIntent make chaos
-DockerChaosIntent make like E C two and panic
-DockerChaosIntent do your worst
+DockerChaosIntent to make like E C two and panic
+DockerChaosIntent to do it's worst
+DockerChaosIntent to do your worst
+
+DockerStartIntent to spin up a server
+DockerStartIntent to spin up a container
+DockerStartIntent to spin something up
+DockerStartIntent to start something
+DockerStartIntent to start a container
+DockerStartIntent to start a server
 
 WhatServersAreDownIntent what's down
 WhatServersAreDownIntent anything broken

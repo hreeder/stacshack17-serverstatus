@@ -1,15 +1,130 @@
-from flask import Flask, jsonify
-from flask_ask import Ask, statement, question
+import docker
+import time
 import random
 import redis
-
+import flask
+from flask_ask import Ask, statement, question
 from config import REDIS_URL
 
-app = Flask(__name__)
+CONTAINER_CHOICES = [
+    "nginx",
+    "redis",
+    "busybox",
+    "ubuntu",
+    "alpine",
+    "registry",
+    "mysql",
+    "mongo",
+    "elasticsearch",
+    "hello-world",
+    "swarm",
+    "postgres",
+    "node",
+    "httpd",
+    "logstash",
+    "debian",
+    "centos",
+    "wordpress",
+    "ruby",
+    "python",
+    "kibana",
+    "java",
+    "jenkins",
+    "php",
+    "rabbitmq",
+    "consul",
+    "golang",
+    "docker",
+    "haproxy",
+    "mariadb"
+]
+
+app = flask.Flask(__name__)
 ask = Ask(app, "/alexa")
 r = redis.StrictRedis.from_url(REDIS_URL)
-ps = r.pubsub()
-ps.subscribe(["hunter"])
+pubsub = r.pubsub()
+pubsub.subscribe(["hunter"])
+
+
+client = docker.DockerClient(base_url='unix://var/run/docker.sock', version='auto')
+state_next = None
+
+
+@ask.intent('DockerChaosIntent')
+def docker_chaos():
+    containers = client.containers.list()
+    if not containers:
+        return statement("Can't find anything to kill")
+    
+    you_die_now = random.choice(containers)
+    try:
+        you_die_now.kill()
+        you_die_now.remove(force=True)
+    except:
+        pass
+    return statement("No problem!")
+
+
+@ask.intent('DockerStartIntent')
+def start_docker():
+    theChosenOne = random.choice(CONTAINER_CHOICES) + ":latest"
+    print("Going to start {}".format(theChosenOne))
+    client.containers.run(theChosenOne, detach=True)
+    return statement("Starting {}".format(theChosenOne))
+
+
+@ask.intent('DockerPSIntent')
+def ps():
+    containers = []
+    for container in client.containers.list():
+        containers.append("Container {}, which is running image {}"
+                          "".format(container.name.replace("_", " "), container.attrs['Config']['Image']))
+
+    if not containers:
+        return statement("There are no containers running at the current time")
+
+    if len(containers) == 1:
+        return statement("You are running {}".format(containers[0]))
+
+    output = "You are currently running "
+
+    if len(containers) == 2:
+        output += "{}, and {}".format(containers[0], containers[1])
+    else:
+        for container in containers[:-1]:
+            output += "{}, ".format(container)
+        output += "and {}".format(container)
+    return statement(output)
+
+
+def rmall_confirmed():
+    for container in client.containers.list():
+        try:
+            container.kill()
+            time.sleep(0.1)
+            container.remove(force=True)
+        except:
+            pass
+    return statement
+
+
+@ask.intent('DockerRMAllIntent')
+def rmall():
+    global state_next
+    state_next = rmall_confirmed
+    return question("Are you sure you want to remove all containers?")
+
+
+@ask.intent('ConfirmIntent')
+def confirm():
+    global state_next
+    nxt = state_next()
+    state_next = None
+    return nxt
+
+
+
+
 
 
 @ask.launch
@@ -36,7 +151,7 @@ def getServerStatus():
     if len(clients) == 0:
         return statement("I don't know about any servers to check. Maybe set some up?")
 
-    for item in ps.listen():
+    for item in pubsub.listen():
         if item['type'] == "message":
             data = item['data'].decode('utf-8')
 
@@ -132,7 +247,7 @@ def index():
     clients = r.smembers("HUNTER_CLIENTS")
     responses = []
 
-    for item in ps.listen():
+    for item in pubsub.listen():
         if item['type'] == "message":
             data = item['data'].decode('utf-8')
 
@@ -155,4 +270,6 @@ def index():
         "fire": len([x for x in responses if float(x[3]) >= 90.0])
     }
 
-    return jsonify(loads=loads, count=len(clients))
+    return flask.jsonify(loads=loads, count=len(clients))
+
+

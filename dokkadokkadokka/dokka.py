@@ -6,22 +6,25 @@ from flask_ask import Ask, statement, question
 from random import choice
 
 app = flask.Flask(__name__)
-ask = Ask(app, route="/")
-client = docker.DockerClient(base_url='unix://var/run/docker.sock')
+ask = Ask(app, route="/alexa")
+client = docker.DockerClient(base_url='unix://var/run/docker.sock', version='auto')
 
 state_next = None
 
 
-@ask.intent('DockerChaos')
+@ask.intent('DockerChaosIntent')
 def docker_chaos():
     containers = client.containers.list()
+    if not containers:
+        return statement("Can't find anything to kill")
+    
     you_die_now = choice(containers)
     try:
         you_die_now.kill()
         you_die_now.remove(force=True)
     except:
         pass
-    return statemen("Done!")
+    return statement("No problem!")
 
 
 @ask.intent('DockerStartIntent')
@@ -36,7 +39,8 @@ def start_docker():
 def ps():
     containers = []
     for container in client.containers.list():
-        containers.append("Container {}, which is running image {}".format(container.name.replace("_", " "), container.attrs['Config']['Image']))
+        containers.append("Container {}, which is running image {}"
+                          "".format(container.name.replace("_", " "), container.attrs['Config']['Image']))
 
     if not containers:
         return statement("There are no containers running at the current time")
