@@ -3,13 +3,13 @@ ServerStatusIntent everything ok
 ServerStatusIntent are my servers ok
 ServerStatusIntent are my servers up
 ServerStatusIntent are my servers down
-ServerStatusIntent is E C two down again
 ServerStatusIntent server status
 ServerStatusIntent what is my server status
 
 DockerChaosIntent kill something
 DockerChaosIntent break something
-DockerChaosIntent surprise me
+DockerChaosIntent mess my stuff up
+DockerChaosIntent screw my stuff up
 DockerChaosIntent make chaos
 DockerChaosIntent to make like E C two and panic
 DockerChaosIntent to do it's worst
@@ -27,12 +27,13 @@ DockerRMAllIntent delete all my servers
 DockerRMAllIntent kill everything
 
 ConfirmIntent yes
-ConfirmIntent for sho
+ConfirmIntent for sure
 ConfirmIntent confirm
 ConfirmIntent go for it
 
 DockerPSIntent what containers are running
 DockerPSIntent what's in docker
+DockerPSIntent how're things
 DockerPSIntent docker P S
 DockerPSIntent docker status
 

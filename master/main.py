@@ -64,7 +64,7 @@ def docker_chaos():
         pass
     return statement(random.choice([
         "Done. {} has been decomissioned".format(you_die_now.name.replace("_", " ")),
-        "Showing {} the door".format(you_die_now.name.replace("_", " ")),
+        "Hitting {} with the ban hammer".format(you_die_now.name.replace("_", " ")),
         "Say goodbye to {}".format(you_die_now.name.replace("_", " "))
     ]))
 
@@ -73,8 +73,8 @@ def docker_chaos():
 def start_docker():
     theChosenOne = random.choice(CONTAINER_CHOICES) + ":latest"
     print("Going to start {}".format(theChosenOne))
-    client.containers.run(theChosenOne, detach=True)
-    return statement("Starting {}".format(theChosenOne))
+    client.containers.run('busybox', detach=True)
+    return statement("Starting a fresh {} container, just for you".format(theChosenOne.replace(':', ' ')))
 
 
 @ask.intent('DockerPSIntent')
@@ -159,7 +159,7 @@ def getServerStatus():
     responses = []
 
     if len(clients) == 0:
-        return statement("I don't know about any servers to check. Maybe set some up?")
+        return statement("I don't know about any servers to check. Maybe start one stupid?")
 
     for item in pubsub.listen():
         if item['type'] == "message":
