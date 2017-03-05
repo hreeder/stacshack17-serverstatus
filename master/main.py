@@ -18,6 +18,15 @@ def startStatus():
     return question(welcome)
 
 
+@ask.intent('WhatServersAreDownIntent')
+def getServerDown():
+    clients = [c.decode('utf-8').split("@",1)[0] for c in r.smembers("HUNTER_CLIENTS")]
+    if len(clients) == 0:
+        return statement("I don't think any servers are turned on.")
+
+    return statement("The following servers are online: {}".format(", ".join(clients)))
+
+
 @ask.intent('ServerStatusIntent')
 def getServerStatus():
     r.publish('hunter', "Q_CPUPERCENT")
