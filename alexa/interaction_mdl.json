@@ -1,7 +1,13 @@
 {
   "intents": [
     {
-      "intent": "GetStatusIntent"
+      "intent": "ServerStatusIntent"
+    },
+    {
+      "intent": "DockerChaosIntent"
+    },
+    {
+      "intent": "WhatServersAreDownIntent"
     },
     {
       "intent": "AMAZON.HelpIntent"

@@ -1,3 +1,22 @@
-GetStatusIntent are my servers ok
-GetStatusIntent are my servers up
-GetStatusIntent are my servers down
+ServerStatusIntent check
+ServerStatusIntent everything ok
+ServerStatusIntent are my servers ok
+ServerStatusIntent are my servers up
+ServerStatusIntent are my servers down
+ServerStatusIntent is E C two down again
+ServerStatusIntent server status
+ServerStatusIntent what is my server status
+
+DockerChaosIntent kill something
+DockerChaosIntent break something
+DockerChaosIntent surprise me
+DockerChaosIntent make chaos
+DockerChaosIntent make like E C two and panic
+DockerChaosIntent do your worst
+
+WhatServersAreDownIntent what's down
+WhatServersAreDownIntent anything broken
+WhatServersAreDownIntent which server is down
+WhatServersAreDownIntent which ones
+WhatServersAreDownIntent what's broken
+
