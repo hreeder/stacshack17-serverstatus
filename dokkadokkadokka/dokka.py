@@ -12,6 +12,18 @@ client = docker.DockerClient(base_url='unix://var/run/docker.sock')
 state_next = None
 
 
+@ask.intent('DockerChaos')
+def docker_chaos():
+    containers = client.containers.list()
+    you_die_now = choice(containers)
+    try:
+        you_die_now.kill()
+        you_die_now.remove(force=True)
+    except:
+        pass
+    return statemen("Done!")
+
+
 @ask.intent('DockerStartIntent')
 def start_docker():
     theChosenOne = choice(CONTAINER_CHOICES) + ":latest"
