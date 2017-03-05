@@ -62,7 +62,11 @@ def docker_chaos():
         you_die_now.remove(force=True)
     except:
         pass
-    return statement("Done. {} has been decomissioned".format(you_die_now.name.replace("_", " ")))
+    return statement(random.choice([
+        "Done. {} has been decomissioned".format(you_die_now.name.replace("_", " ")),
+        "Showing {} the door".format(you_die_now.name.replace("_", " ")),
+        "Say goodbye to {}".format(you_die_now.name.replace("_", " "))
+    ]))
 
 
 @ask.intent('DockerStartIntent')
@@ -87,7 +91,12 @@ def ps():
     if len(containers) == 1:
         return statement("You are running {} which is image {}".format(containers[0], ' '.join(c_types)))
 
-    output = "You are currently running {} containers, called ".format(' '.join(c_types))
+    c_types = list(c_types)
+    if len(c_types) > 1:
+        j_cts = ', '.join(c_types[:-1]) + ' and ' + c_types[-1]
+    else:
+        j_cts = ' and '.join(c_types)
+    output = "You are currently running {} containers, called ".format(j_cts)
 
     if len(containers) == 2:
         output += "{}, and {}".format(containers[0], containers[1])
