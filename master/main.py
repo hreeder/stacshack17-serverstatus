@@ -62,7 +62,7 @@ def docker_chaos():
         you_die_now.remove(force=True)
     except:
         pass
-    return statement("No problem!")
+    return statement("Done. {} has been decomissioned".format(you_die_now.name.replace("_", " ")))
 
 
 @ask.intent('DockerStartIntent')
