@@ -57,7 +57,7 @@ def getServerStatus():
         output = random.choice([
             "Everything seems fine. ",
             "Nothing much to report. ",
-            "All tickety boo. ",
+            "All good. ",
         ])
     elif avg < 75.0:
         output = random.choice([
@@ -73,24 +73,26 @@ def getServerStatus():
             "Oh boy... ",
         ])
 
-    output += "Of your {} servers, ".format(len(clients))
+    if len(clients) > 1:
+        output += "Out of {} servers, ".format(len(clients))
+    else:
+        output += "Your server "
 
     def quald(val):
         if val == 1:
             qualifier = "is"
         else:
             qualifier = "are"
-
-        return "{} {}".format(val, qualifier)
+        return '{} {}'.format(val if val>1 else '', qualifier)
 
     if loads['low']:
         parts.append(
-            "{} practically idle".format(quald(loads['low']))
+            "{} idling".format(quald(loads['low']))
         )
 
     if loads['mid']:
         parts.append(
-            "{} being somewhat utilized".format(quald(loads['mid']))
+            "{} seeing increased load".format(quald(loads['mid']))
         )
 
     if loads['high']:
@@ -109,6 +111,8 @@ def getServerStatus():
         output += ", ".join(parts[:-1]) + ", and " + parts[-1]
     else:
         output += parts[0]
+
+    output += '.'
 
     return statement(output)
 
