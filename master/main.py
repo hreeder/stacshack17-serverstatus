@@ -76,24 +76,25 @@ def start_docker():
 @ask.intent('DockerPSIntent')
 def ps():
     containers = []
+    c_types = set()
     for container in client.containers.list():
-        containers.append("Container {}, which is running image {}"
-                          "".format(container.name.replace("_", " "), container.attrs['Config']['Image']))
+        containers.append(container.name.replace("_", " "))
+        c_types.add(container.attrs['Config']['Image'])
 
     if not containers:
         return statement("There are no containers running at the current time")
-
+    
     if len(containers) == 1:
-        return statement("You are running {}".format(containers[0]))
+        return statement("You are running {} which is image {}".format(containers[0], ' '.join(c_types)))
 
-    output = "You are currently running "
+    output = "You are currently running {} containers, called ".format(' '.join(c_types))
 
     if len(containers) == 2:
         output += "{}, and {}".format(containers[0], containers[1])
     else:
         for container in containers[:-1]:
             output += "{}, ".format(container)
-        output += "and {}".format(container)
+        output += "and {}".format(containers[-1])
     return statement(output)
 
 
