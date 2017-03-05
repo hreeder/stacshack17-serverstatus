@@ -22,6 +22,20 @@ DockerStartIntent to start something
 DockerStartIntent to start a container
 DockerStartIntent to start a server
 
+DockerRMAllIntent delete everything
+DockerRMAllIntent delete all my servers
+DockerRMAllIntent kill everything
+
+ConfirmIntent yes
+ConfirmIntent for sho
+ConfirmIntent confirm
+ConfirmIntent go for it
+
+DockerPSIntent what containers are running
+DockerPSIntent what's in docker
+DockerPSIntent docker P S
+DockerPSIntent docker status
+
 WhatServersAreDownIntent what's down
 WhatServersAreDownIntent anything broken
 WhatServersAreDownIntent which server is down
