@@ -236,9 +236,9 @@ def getServerStatus():
 
     if loads['fire']:
         parts.append(
-            "{} on fire. {}".format(quald(loads['fire'], random.choice([
+            "{} {} on fire. {}".format(loads['fire'], quald(loads['fire']), random.choice([
                 "You might want to fix that...",
-            ])))
+            ]))
         )
 
     if len(parts) > 1:
